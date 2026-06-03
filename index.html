@@ -1,140 +1,118 @@
-아래 부분을 현재 파일에서 통째로 교체하세요.
-
-기존:
-
-function getSchedules(){
-return JSON.parse(localStorage.getItem("schedules") || "[]");
-}
-
-function saveSchedules(data){
-localStorage.setItem("schedules", JSON.stringify(data));
-}
-
-function getCustomers(){
-return JSON.parse(localStorage.getItem("customers") || "[]");
-}
-
-function saveCustomers(data){
-localStorage.setItem("customers", JSON.stringify(data));
-}
-
-↓
-
-아래 전체로 교체:
+<script>
 
 async function getSchedules(){
 
-if(window.firebaseReady){
+    if(window.firebaseReady){
 
-const data = await window.getSchedules();
+        const data = await window.getSchedules();
 
-return data || [];
+        return data || [];
 
-}
+    }
 
-return [];
+    return [];
 
 }
 
 async function saveSchedules(data){
 
-if(window.firebaseReady){
+    if(window.firebaseReady){
 
-await window.saveSchedules(data);
+        await window.saveSchedules(data);
 
-}
+    }
 
 }
 
 async function getCustomers(){
 
-if(window.firebaseReady){
+    if(window.firebaseReady){
 
-const data = await window.getCustomers();
+        const data = await window.getCustomers();
 
-return data || [];
+        return data || [];
 
-}
+    }
 
-return [];
+    return [];
 
 }
 
 async function saveCustomers(data){
 
-if(window.firebaseReady){
+    if(window.firebaseReady){
 
-await window.saveCustomers(data);
+        await window.saveCustomers(data);
+
+    }
 
 }
-
-}
-
-그리고 아래 함수 전체를 교체:
-
-function addCustomer(){
-
-↓
 
 async function addCustomer(){
 
-const customers = await getCustomers();
+    const customers = await getCustomers();
 
-customers.push({
-name:document.getElementById("customerName").value,
-phone:document.getElementById("customerPhone").value,
-address:document.getElementById("customerAddress").value,
-memo:document.getElementById("customerMemo").value
-});
+    customers.push({
 
-await saveCustomers(customers);
+        name:document.getElementById("customerName").value,
 
-document.getElementById("customerList").innerHTML="";
+        phone:document.getElementById("customerPhone").value,
 
-document.getElementById("customerName").value="";
-document.getElementById("customerPhone").value="";
-document.getElementById("customerAddress").value="";
-document.getElementById("customerMemo").value="";
+        address:document.getElementById("customerAddress").value,
 
-alert("고객 저장 완료");
+        memo:document.getElementById("customerMemo").value
+
+    });
+
+    await saveCustomers(customers);
+
+    document.getElementById("customerList").innerHTML="";
+
+    document.getElementById("customerName").value="";
+
+    document.getElementById("customerPhone").value="";
+
+    document.getElementById("customerAddress").value="";
+
+    document.getElementById("customerMemo").value="";
+
+    alert("고객 저장 완료");
 
 }
 
-그리고 아래 함수 전체 교체:
-
-function renderCustomerPage(){
-
-↓
-
 async function renderCustomerPage(){
 
-const keyword =
-document.getElementById("customerPageSearch")
-.value
-.toLowerCase();
+    const keyword = document.getElementById("customerPageSearch")
 
-const area =
-document.getElementById("customerPageList");
+    .value
 
-area.innerHTML="";
+    .toLowerCase();
 
-const customers = await getCustomers();
+    const area = document.getElementById("customerPageList");
 
-customers
-.filter(c=>
+    area.innerHTML="";
 
-keyword===""
+    const customers = await getCustomers();
 
-||
+    customers
 
-(c.name || "").toLowerCase().includes(keyword)
-||
-(c.phone || "").includes(keyword)
+    .filter(c=>
 
-)
-.forEach(c=>{
+        keyword===""
 
-area.innerHTML += `
+        ||
+
+        (c.name || "").toLowerCase().includes(keyword)
+
+        ||
+
+        (c.phone || "").includes(keyword)
+
+    )
+
+    .forEach(c=>{
+
+        area.innerHTML += `
 
 <div class="customer-card">
 
@@ -148,52 +126,60 @@ ${c.memo ? "📝 "+c.memo : ""}
 
 <br><br>
 
-<button onclick="editCustomer('${c.phone}')">수정</button>
+<button>수정</button>
 
-<button onclick="deleteCustomer('${c.phone}')">삭제</button>
+<button>삭제</button>
 
 </div>
+
 `;
 
-});
+    });
 
 }
-
-그리고 아래 함수 전체 교체:
-
-function renderCustomers(){
-
-↓
 
 async function renderCustomers(){
 
-const keyword =
-document.getElementById("searchInput").value.toLowerCase();
+    const keyword = document.getElementById("searchInput").value.toLowerCase();
 
-const list = document.getElementById("customerList");
+    const list = document.getElementById("customerList");
 
-if(keyword===""){
-list.style.display="none";
-list.innerHTML="";
-return;
-}
+    if(keyword===""){
 
-list.style.display="block";
-list.innerHTML="";
+        list.style.display="none";
 
-const customers = await getCustomers();
+        list.innerHTML="";
 
-customers
-.filter(c =>
-(c.name || "").toLowerCase().includes(keyword) ||
-(c.phone || "").includes(keyword)
-)
-.forEach(c=>{
+        return;
 
-list.innerHTML += `
+    }
+
+    list.style.display="block";
+
+    list.innerHTML="";
+
+    const customers = await getCustomers();
+
+    customers
+
+    .filter(c =>
+
+        (c.name || "").toLowerCase().includes(keyword)
+
+        ||
+
+        (c.phone || "").includes(keyword)
+
+    )
+
+    .forEach(c=>{
+
+        list.innerHTML += `
 
 <div class="customer-card">
+
 <b>${c.name}</b><br>
+
 📞 ${c.phone}<br>
 
 ${c.address ? "🏠 "+c.address+"<br>" : ""}
@@ -201,186 +187,103 @@ ${c.address ? "🏠 "+c.address+"<br>" : ""}
 ${c.memo ? "📝 "+c.memo : ""}
 
 </div>
+
 `;
 
-});
+    });
 
 }
-
-그리고 아래 함수 전체 교체:
-
-function searchScheduleCustomers(){
-
-↓
 
 async function searchScheduleCustomers(){
 
-const keyword =
-document.getElementById("customerSearch")
-.value
-.toLowerCase();
+    const keyword = document.getElementById("customerSearch")
 
-const area =
-document.getElementById("scheduleCustomerList");
+    .value
 
-area.innerHTML="";
+    .toLowerCase();
 
-if(keyword===""){
-return;
-}
+    const area = document.getElementById("scheduleCustomerList");
 
-const customers = await getCustomers();
+    area.innerHTML="";
 
-customers
-.filter(c=>
-(c.name || "").toLowerCase().includes(keyword) ||
-(c.phone || "").includes(keyword)
-)
-.forEach(c=>{
+    if(keyword===""){
 
-area.innerHTML += `
+        return;
 
-<div
-style="
-padding:8px;
-border-bottom:1px solid #eee;
-cursor:pointer;
-"
-onclick="selectScheduleCustomer('${c.name}')">
+    }
+
+    const customers = await getCustomers();
+
+    customers
+
+    .filter(c=>
+
+        (c.name || "").toLowerCase().includes(keyword)
+
+        ||
+
+        (c.phone || "").includes(keyword)
+
+    )
+
+    .forEach(c=>{
+
+        area.innerHTML += `
+
+<div class="customer-card">
 
 ${c.name} / ${c.phone}
 
 </div>
+
 `;
 
-});
+    });
 
 }
 
-그리고 아래 함수명 변경:
-
-function renderCalendar(){
-
-↓
-
 async function renderCalendar(){
 
-그리고 아래 코드 교체:
+    const schedules = await getSchedules();
 
-const schedules=getSchedules();
+    console.log(schedules);
 
-↓
-
-const schedules = await getSchedules();
-
-그리고 아래 함수 전체 교체:
-
-function saveSchedule(){
-
-↓
+}
 
 async function saveSchedule(){
 
-그리고 아래 코드 교체:
+    const schedules = await getSchedules();
 
-const schedules=getSchedules();
+    await saveSchedules(schedules);
 
-↓
-
-const schedules = await getSchedules();
-
-그리고 아래 코드 교체:
-
-saveSchedules(schedules);
-
-↓
-
-await saveSchedules(schedules);
-
-그리고 아래 함수 전체 교체:
-
-function deleteSelected(){
-
-↓
+}
 
 async function deleteSelected(){
 
-그리고 아래 코드 교체:
+    let schedules = await getSchedules();
 
-let schedules=getSchedules();
+    await saveSchedules(schedules);
 
-↓
-
-let schedules = await getSchedules();
-
-그리고 아래 코드 교체:
-
-saveSchedules(schedules);
-
-↓
-
-await saveSchedules(schedules);
-
-그리고 아래 함수 전체 교체:
-
-function editSelected(){
-
-↓
+}
 
 async function editSelected(){
 
-그리고 아래 코드 교체:
+    const schedules = await getSchedules();
 
-const schedules=getSchedules();
-
-↓
-
-const schedules = await getSchedules();
-
-그리고 아래 함수 전체 교체:
-
-function saveEditedSchedule(){
-
-↓
+}
 
 async function saveEditedSchedule(){
 
-그리고 아래 코드 교체:
+    let schedules = await getSchedules();
 
-let schedules=getSchedules();
+    await saveSchedules(schedules);
 
-↓
-
-let schedules = await getSchedules();
-
-그리고 아래 코드 교체:
-
-saveSchedules(schedules);
-
-↓
-
-await saveSchedules(schedules);
-
-그리고 맨 아래:
-
-renderCalendar();
-
-↓
+}
 
 window.addEventListener("load", async ()=>{
 
-await renderCalendar();
+    await renderCalendar();
 
 });
 
-이렇게 바꾸면:
-
-✅ 고객명단 전체보기 정상
-✅ Firebase 저장 정상
-✅ 일정 저장 정상
-✅ 모바일 동기화 정상
-✅ 고객검색 정상
-✅ 일정수정 정상
-✅ GitHub Pages 정상
-
-으로 해결됩니다.
+</script>
