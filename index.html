@@ -2058,9 +2058,14 @@ currentDate.setMonth(currentDate.getMonth()+v);
 renderCalendar();
 }
 
-document.addEventListener("click", function(e){
+document.addEventListener("mousedown", function(e){
 
 const menu = document.getElementById("menu");
+
+/* 우클릭은 무시 */
+if(e.button === 2){
+return;
+}
 
 /* 메뉴 바깥 클릭시 메뉴 닫기 */
 if(!menu.contains(e.target)){
