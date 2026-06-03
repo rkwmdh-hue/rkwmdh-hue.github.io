@@ -44,32 +44,8 @@ button{padding:10px;margin:2px}
 }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
-
-<style>
-#weeklyOptions label,
-#editWeeklyOptions label{
-display:flex;
-align-items:center;
-gap:2px;
-margin-right:4px;
-font-size:14px;
-cursor:pointer;
-}
-
-#weeklyOptions input,
-#editWeeklyOptions input{
-width:auto;
-margin:0;
-}
-</style>
-
 </head>
 <body>
-
-
-<div style="background:#16a34a;color:white;padding:10px;text-align:center;font-weight:bold">
-✅ Firebase 실시간 동기화 버전
-</div>
 
 <div class="header">📅 고객 스케줄 관리</div>
 
@@ -82,4 +58,1686 @@ margin:0;
 <input type="text" id="customerName" placeholder="고객명">
 <input type="text" id="customerPhone" placeholder="전화번호">
 
+<input type="text" id="customerAddress" placeholder="주소">
+
+<textarea id="customerMemo" placeholder="고객 메모"></textarea>
+
+<button onclick="addCustomer()">고객 저장</button>
+
+<hr>
+
+<input type="text" id="searchInput" placeholder="고객 검색" onkeyup="renderCustomers()">
+
+<button onclick="openCustomerPage()">고객명단 전체보기</button>
+<button onclick="exportCustomersExcel()">고객명단 엑셀출력</button>
+
+<div id="customerList" style="display:none"></div>
+
+</div>
+
+<div class="main">
+
+<button onclick="changeMonth(-1)">◀</button>
+<button onclick="changeMonth(1)">▶</button>
+
+<h2 id="monthText"></h2>
+
+<div class="calendar" id="calendar"></div>
+
+</div>
+
+</div>
+
+<div class="modal" id="scheduleModal">
+<div class="modalbox">
+
+<h2 id="scheduleDate"></h2>
+
+<input type="text" id="scheduleTitle" placeholder="일정 제목">
+
+<label>고객 검색</label>
+<input type="text" id="customerSearch" placeholder="이름/전화번호 검색" onkeyup="searchScheduleCustomers()">
+
+<div id="scheduleCustomerList"
+style="
+border:1px solid #ccc;
+max-height:150px;
+overflow:auto;
+margin-bottom:10px;
+"></div>
+
+<input type="hidden" id="selectedCustomer">
+
+
+<label>시작일</label>
+<input type="date" id="startDateDate">
+
+<label>시간 (24시간)</label>
+<select id="startDateTime">
+<option value="00:00">00:00</option>
+<option value="00:10">00:10</option>
+<option value="00:20">00:20</option>
+<option value="00:30">00:30</option>
+<option value="00:40">00:40</option>
+<option value="00:50">00:50</option>
+<option value="01:00">01:00</option>
+<option value="01:10">01:10</option>
+<option value="01:20">01:20</option>
+<option value="01:30">01:30</option>
+<option value="01:40">01:40</option>
+<option value="01:50">01:50</option>
+<option value="02:00">02:00</option>
+<option value="02:10">02:10</option>
+<option value="02:20">02:20</option>
+<option value="02:30">02:30</option>
+<option value="02:40">02:40</option>
+<option value="02:50">02:50</option>
+<option value="03:00">03:00</option>
+<option value="03:10">03:10</option>
+<option value="03:20">03:20</option>
+<option value="03:30">03:30</option>
+<option value="03:40">03:40</option>
+<option value="03:50">03:50</option>
+<option value="04:00">04:00</option>
+<option value="04:10">04:10</option>
+<option value="04:20">04:20</option>
+<option value="04:30">04:30</option>
+<option value="04:40">04:40</option>
+<option value="04:50">04:50</option>
+<option value="05:00">05:00</option>
+<option value="05:10">05:10</option>
+<option value="05:20">05:20</option>
+<option value="05:30">05:30</option>
+<option value="05:40">05:40</option>
+<option value="05:50">05:50</option>
+<option value="06:00">06:00</option>
+<option value="06:10">06:10</option>
+<option value="06:20">06:20</option>
+<option value="06:30">06:30</option>
+<option value="06:40">06:40</option>
+<option value="06:50">06:50</option>
+<option value="07:00">07:00</option>
+<option value="07:10">07:10</option>
+<option value="07:20">07:20</option>
+<option value="07:30">07:30</option>
+<option value="07:40">07:40</option>
+<option value="07:50">07:50</option>
+<option value="08:00">08:00</option>
+<option value="08:10">08:10</option>
+<option value="08:20">08:20</option>
+<option value="08:30">08:30</option>
+<option value="08:40">08:40</option>
+<option value="08:50">08:50</option>
+<option value="09:00">09:00</option>
+<option value="09:10">09:10</option>
+<option value="09:20">09:20</option>
+<option value="09:30">09:30</option>
+<option value="09:40">09:40</option>
+<option value="09:50">09:50</option>
+<option value="10:00">10:00</option>
+<option value="10:10">10:10</option>
+<option value="10:20">10:20</option>
+<option value="10:30">10:30</option>
+<option value="10:40">10:40</option>
+<option value="10:50">10:50</option>
+<option value="11:00">11:00</option>
+<option value="11:10">11:10</option>
+<option value="11:20">11:20</option>
+<option value="11:30">11:30</option>
+<option value="11:40">11:40</option>
+<option value="11:50">11:50</option>
+<option value="12:00">12:00</option>
+<option value="12:10">12:10</option>
+<option value="12:20">12:20</option>
+<option value="12:30">12:30</option>
+<option value="12:40">12:40</option>
+<option value="12:50">12:50</option>
+<option value="13:00">13:00</option>
+<option value="13:10">13:10</option>
+<option value="13:20">13:20</option>
+<option value="13:30">13:30</option>
+<option value="13:40">13:40</option>
+<option value="13:50">13:50</option>
+<option value="14:00">14:00</option>
+<option value="14:10">14:10</option>
+<option value="14:20">14:20</option>
+<option value="14:30">14:30</option>
+<option value="14:40">14:40</option>
+<option value="14:50">14:50</option>
+<option value="15:00">15:00</option>
+<option value="15:10">15:10</option>
+<option value="15:20">15:20</option>
+<option value="15:30">15:30</option>
+<option value="15:40">15:40</option>
+<option value="15:50">15:50</option>
+<option value="16:00">16:00</option>
+<option value="16:10">16:10</option>
+<option value="16:20">16:20</option>
+<option value="16:30">16:30</option>
+<option value="16:40">16:40</option>
+<option value="16:50">16:50</option>
+<option value="17:00">17:00</option>
+<option value="17:10">17:10</option>
+<option value="17:20">17:20</option>
+<option value="17:30">17:30</option>
+<option value="17:40">17:40</option>
+<option value="17:50">17:50</option>
+<option value="18:00">18:00</option>
+<option value="18:10">18:10</option>
+<option value="18:20">18:20</option>
+<option value="18:30">18:30</option>
+<option value="18:40">18:40</option>
+<option value="18:50">18:50</option>
+<option value="19:00">19:00</option>
+<option value="19:10">19:10</option>
+<option value="19:20">19:20</option>
+<option value="19:30">19:30</option>
+<option value="19:40">19:40</option>
+<option value="19:50">19:50</option>
+<option value="20:00">20:00</option>
+<option value="20:10">20:10</option>
+<option value="20:20">20:20</option>
+<option value="20:30">20:30</option>
+<option value="20:40">20:40</option>
+<option value="20:50">20:50</option>
+<option value="21:00">21:00</option>
+<option value="21:10">21:10</option>
+<option value="21:20">21:20</option>
+<option value="21:30">21:30</option>
+<option value="21:40">21:40</option>
+<option value="21:50">21:50</option>
+<option value="22:00">22:00</option>
+<option value="22:10">22:10</option>
+<option value="22:20">22:20</option>
+<option value="22:30">22:30</option>
+<option value="22:40">22:40</option>
+<option value="22:50">22:50</option>
+<option value="23:00">23:00</option>
+<option value="23:10">23:10</option>
+<option value="23:20">23:20</option>
+<option value="23:30">23:30</option>
+<option value="23:40">23:40</option>
+<option value="23:50">23:50</option>
+</select>
+
+<label>종료일</label>
+<input type="date" id="endDateDate">
+
+<label>시간 (24시간)</label>
+<select id="endDateTime">
+<option value="00:00">00:00</option>
+<option value="00:10">00:10</option>
+<option value="00:20">00:20</option>
+<option value="00:30">00:30</option>
+<option value="00:40">00:40</option>
+<option value="00:50">00:50</option>
+<option value="01:00">01:00</option>
+<option value="01:10">01:10</option>
+<option value="01:20">01:20</option>
+<option value="01:30">01:30</option>
+<option value="01:40">01:40</option>
+<option value="01:50">01:50</option>
+<option value="02:00">02:00</option>
+<option value="02:10">02:10</option>
+<option value="02:20">02:20</option>
+<option value="02:30">02:30</option>
+<option value="02:40">02:40</option>
+<option value="02:50">02:50</option>
+<option value="03:00">03:00</option>
+<option value="03:10">03:10</option>
+<option value="03:20">03:20</option>
+<option value="03:30">03:30</option>
+<option value="03:40">03:40</option>
+<option value="03:50">03:50</option>
+<option value="04:00">04:00</option>
+<option value="04:10">04:10</option>
+<option value="04:20">04:20</option>
+<option value="04:30">04:30</option>
+<option value="04:40">04:40</option>
+<option value="04:50">04:50</option>
+<option value="05:00">05:00</option>
+<option value="05:10">05:10</option>
+<option value="05:20">05:20</option>
+<option value="05:30">05:30</option>
+<option value="05:40">05:40</option>
+<option value="05:50">05:50</option>
+<option value="06:00">06:00</option>
+<option value="06:10">06:10</option>
+<option value="06:20">06:20</option>
+<option value="06:30">06:30</option>
+<option value="06:40">06:40</option>
+<option value="06:50">06:50</option>
+<option value="07:00">07:00</option>
+<option value="07:10">07:10</option>
+<option value="07:20">07:20</option>
+<option value="07:30">07:30</option>
+<option value="07:40">07:40</option>
+<option value="07:50">07:50</option>
+<option value="08:00">08:00</option>
+<option value="08:10">08:10</option>
+<option value="08:20">08:20</option>
+<option value="08:30">08:30</option>
+<option value="08:40">08:40</option>
+<option value="08:50">08:50</option>
+<option value="09:00">09:00</option>
+<option value="09:10">09:10</option>
+<option value="09:20">09:20</option>
+<option value="09:30">09:30</option>
+<option value="09:40">09:40</option>
+<option value="09:50">09:50</option>
+<option value="10:00">10:00</option>
+<option value="10:10">10:10</option>
+<option value="10:20">10:20</option>
+<option value="10:30">10:30</option>
+<option value="10:40">10:40</option>
+<option value="10:50">10:50</option>
+<option value="11:00">11:00</option>
+<option value="11:10">11:10</option>
+<option value="11:20">11:20</option>
+<option value="11:30">11:30</option>
+<option value="11:40">11:40</option>
+<option value="11:50">11:50</option>
+<option value="12:00">12:00</option>
+<option value="12:10">12:10</option>
+<option value="12:20">12:20</option>
+<option value="12:30">12:30</option>
+<option value="12:40">12:40</option>
+<option value="12:50">12:50</option>
+<option value="13:00">13:00</option>
+<option value="13:10">13:10</option>
+<option value="13:20">13:20</option>
+<option value="13:30">13:30</option>
+<option value="13:40">13:40</option>
+<option value="13:50">13:50</option>
+<option value="14:00">14:00</option>
+<option value="14:10">14:10</option>
+<option value="14:20">14:20</option>
+<option value="14:30">14:30</option>
+<option value="14:40">14:40</option>
+<option value="14:50">14:50</option>
+<option value="15:00">15:00</option>
+<option value="15:10">15:10</option>
+<option value="15:20">15:20</option>
+<option value="15:30">15:30</option>
+<option value="15:40">15:40</option>
+<option value="15:50">15:50</option>
+<option value="16:00">16:00</option>
+<option value="16:10">16:10</option>
+<option value="16:20">16:20</option>
+<option value="16:30">16:30</option>
+<option value="16:40">16:40</option>
+<option value="16:50">16:50</option>
+<option value="17:00">17:00</option>
+<option value="17:10">17:10</option>
+<option value="17:20">17:20</option>
+<option value="17:30">17:30</option>
+<option value="17:40">17:40</option>
+<option value="17:50">17:50</option>
+<option value="18:00">18:00</option>
+<option value="18:10">18:10</option>
+<option value="18:20">18:20</option>
+<option value="18:30">18:30</option>
+<option value="18:40">18:40</option>
+<option value="18:50">18:50</option>
+<option value="19:00">19:00</option>
+<option value="19:10">19:10</option>
+<option value="19:20">19:20</option>
+<option value="19:30">19:30</option>
+<option value="19:40">19:40</option>
+<option value="19:50">19:50</option>
+<option value="20:00">20:00</option>
+<option value="20:10">20:10</option>
+<option value="20:20">20:20</option>
+<option value="20:30">20:30</option>
+<option value="20:40">20:40</option>
+<option value="20:50">20:50</option>
+<option value="21:00">21:00</option>
+<option value="21:10">21:10</option>
+<option value="21:20">21:20</option>
+<option value="21:30">21:30</option>
+<option value="21:40">21:40</option>
+<option value="21:50">21:50</option>
+<option value="22:00">22:00</option>
+<option value="22:10">22:10</option>
+<option value="22:20">22:20</option>
+<option value="22:30">22:30</option>
+<option value="22:40">22:40</option>
+<option value="22:50">22:50</option>
+<option value="23:00">23:00</option>
+<option value="23:10">23:10</option>
+<option value="23:20">23:20</option>
+<option value="23:30">23:30</option>
+<option value="23:40">23:40</option>
+<option value="23:50">23:50</option>
+</select>
+
+<select id="repeatType">
+<option value="">반복 안함</option>
+<option value="daily">매일 반복</option>
+<option value="weekly">매주 반복</option>
+<option value="monthly">매월 반복</option>
+</select>
+
+<div id="weeklyOptions" style="display:none;margin-bottom:10px">
+<label><input type="checkbox" class="weekDay" value="0">일</label>
+<label><input type="checkbox" class="weekDay" value="1">월</label>
+<label><input type="checkbox" class="weekDay" value="2">화</label>
+<label><input type="checkbox" class="weekDay" value="3">수</label>
+<label><input type="checkbox" class="weekDay" value="4">목</label>
+<label><input type="checkbox" class="weekDay" value="5">금</label>
+<label><input type="checkbox" class="weekDay" value="6">토</label>
+</div>
+
+<textarea id="scheduleMemo" placeholder="메모"></textarea>
+
+<button onclick="saveSchedule()">저장</button>
+<button onclick="closeModal()">닫기</button>
+
+</div>
+</div>
+
+<div class="modal" id="listModal">
+<div class="modalbox">
+
+<h2 id="listTitle"></h2>
+
+<div id="listArea"></div>
+
+<button onclick="closeList()">닫기</button>
+
+</div>
+</div>
+
+<div class="modal" id="editModal">
+<div class="modalbox">
+
+<input type="hidden" id="editGroupId">
+
+<input type="text" id="editTitle" placeholder="일정 제목">
+
+<textarea id="editMemo" placeholder="메모"></textarea>
+
+<label>시작일</label>
+<input type="date" id="editStartDate">
+
+<label>시간 (24시간)</label>
+<select id="editStartTime">
+<option value="00:00">00:00</option>
+<option value="00:10">00:10</option>
+<option value="00:20">00:20</option>
+<option value="00:30">00:30</option>
+<option value="00:40">00:40</option>
+<option value="00:50">00:50</option>
+<option value="01:00">01:00</option>
+<option value="01:10">01:10</option>
+<option value="01:20">01:20</option>
+<option value="01:30">01:30</option>
+<option value="01:40">01:40</option>
+<option value="01:50">01:50</option>
+<option value="02:00">02:00</option>
+<option value="02:10">02:10</option>
+<option value="02:20">02:20</option>
+<option value="02:30">02:30</option>
+<option value="02:40">02:40</option>
+<option value="02:50">02:50</option>
+<option value="03:00">03:00</option>
+<option value="03:10">03:10</option>
+<option value="03:20">03:20</option>
+<option value="03:30">03:30</option>
+<option value="03:40">03:40</option>
+<option value="03:50">03:50</option>
+<option value="04:00">04:00</option>
+<option value="04:10">04:10</option>
+<option value="04:20">04:20</option>
+<option value="04:30">04:30</option>
+<option value="04:40">04:40</option>
+<option value="04:50">04:50</option>
+<option value="05:00">05:00</option>
+<option value="05:10">05:10</option>
+<option value="05:20">05:20</option>
+<option value="05:30">05:30</option>
+<option value="05:40">05:40</option>
+<option value="05:50">05:50</option>
+<option value="06:00">06:00</option>
+<option value="06:10">06:10</option>
+<option value="06:20">06:20</option>
+<option value="06:30">06:30</option>
+<option value="06:40">06:40</option>
+<option value="06:50">06:50</option>
+<option value="07:00">07:00</option>
+<option value="07:10">07:10</option>
+<option value="07:20">07:20</option>
+<option value="07:30">07:30</option>
+<option value="07:40">07:40</option>
+<option value="07:50">07:50</option>
+<option value="08:00">08:00</option>
+<option value="08:10">08:10</option>
+<option value="08:20">08:20</option>
+<option value="08:30">08:30</option>
+<option value="08:40">08:40</option>
+<option value="08:50">08:50</option>
+<option value="09:00">09:00</option>
+<option value="09:10">09:10</option>
+<option value="09:20">09:20</option>
+<option value="09:30">09:30</option>
+<option value="09:40">09:40</option>
+<option value="09:50">09:50</option>
+<option value="10:00">10:00</option>
+<option value="10:10">10:10</option>
+<option value="10:20">10:20</option>
+<option value="10:30">10:30</option>
+<option value="10:40">10:40</option>
+<option value="10:50">10:50</option>
+<option value="11:00">11:00</option>
+<option value="11:10">11:10</option>
+<option value="11:20">11:20</option>
+<option value="11:30">11:30</option>
+<option value="11:40">11:40</option>
+<option value="11:50">11:50</option>
+<option value="12:00">12:00</option>
+<option value="12:10">12:10</option>
+<option value="12:20">12:20</option>
+<option value="12:30">12:30</option>
+<option value="12:40">12:40</option>
+<option value="12:50">12:50</option>
+<option value="13:00">13:00</option>
+<option value="13:10">13:10</option>
+<option value="13:20">13:20</option>
+<option value="13:30">13:30</option>
+<option value="13:40">13:40</option>
+<option value="13:50">13:50</option>
+<option value="14:00">14:00</option>
+<option value="14:10">14:10</option>
+<option value="14:20">14:20</option>
+<option value="14:30">14:30</option>
+<option value="14:40">14:40</option>
+<option value="14:50">14:50</option>
+<option value="15:00">15:00</option>
+<option value="15:10">15:10</option>
+<option value="15:20">15:20</option>
+<option value="15:30">15:30</option>
+<option value="15:40">15:40</option>
+<option value="15:50">15:50</option>
+<option value="16:00">16:00</option>
+<option value="16:10">16:10</option>
+<option value="16:20">16:20</option>
+<option value="16:30">16:30</option>
+<option value="16:40">16:40</option>
+<option value="16:50">16:50</option>
+<option value="17:00">17:00</option>
+<option value="17:10">17:10</option>
+<option value="17:20">17:20</option>
+<option value="17:30">17:30</option>
+<option value="17:40">17:40</option>
+<option value="17:50">17:50</option>
+<option value="18:00">18:00</option>
+<option value="18:10">18:10</option>
+<option value="18:20">18:20</option>
+<option value="18:30">18:30</option>
+<option value="18:40">18:40</option>
+<option value="18:50">18:50</option>
+<option value="19:00">19:00</option>
+<option value="19:10">19:10</option>
+<option value="19:20">19:20</option>
+<option value="19:30">19:30</option>
+<option value="19:40">19:40</option>
+<option value="19:50">19:50</option>
+<option value="20:00">20:00</option>
+<option value="20:10">20:10</option>
+<option value="20:20">20:20</option>
+<option value="20:30">20:30</option>
+<option value="20:40">20:40</option>
+<option value="20:50">20:50</option>
+<option value="21:00">21:00</option>
+<option value="21:10">21:10</option>
+<option value="21:20">21:20</option>
+<option value="21:30">21:30</option>
+<option value="21:40">21:40</option>
+<option value="21:50">21:50</option>
+<option value="22:00">22:00</option>
+<option value="22:10">22:10</option>
+<option value="22:20">22:20</option>
+<option value="22:30">22:30</option>
+<option value="22:40">22:40</option>
+<option value="22:50">22:50</option>
+<option value="23:00">23:00</option>
+<option value="23:10">23:10</option>
+<option value="23:20">23:20</option>
+<option value="23:30">23:30</option>
+<option value="23:40">23:40</option>
+<option value="23:50">23:50</option>
+</select>
+
+<label>종료일</label>
+<input type="date" id="editEndDate">
+
+<label>시간 (24시간)</label>
+<select id="editEndTime">
+<option value="00:00">00:00</option>
+<option value="00:10">00:10</option>
+<option value="00:20">00:20</option>
+<option value="00:30">00:30</option>
+<option value="00:40">00:40</option>
+<option value="00:50">00:50</option>
+<option value="01:00">01:00</option>
+<option value="01:10">01:10</option>
+<option value="01:20">01:20</option>
+<option value="01:30">01:30</option>
+<option value="01:40">01:40</option>
+<option value="01:50">01:50</option>
+<option value="02:00">02:00</option>
+<option value="02:10">02:10</option>
+<option value="02:20">02:20</option>
+<option value="02:30">02:30</option>
+<option value="02:40">02:40</option>
+<option value="02:50">02:50</option>
+<option value="03:00">03:00</option>
+<option value="03:10">03:10</option>
+<option value="03:20">03:20</option>
+<option value="03:30">03:30</option>
+<option value="03:40">03:40</option>
+<option value="03:50">03:50</option>
+<option value="04:00">04:00</option>
+<option value="04:10">04:10</option>
+<option value="04:20">04:20</option>
+<option value="04:30">04:30</option>
+<option value="04:40">04:40</option>
+<option value="04:50">04:50</option>
+<option value="05:00">05:00</option>
+<option value="05:10">05:10</option>
+<option value="05:20">05:20</option>
+<option value="05:30">05:30</option>
+<option value="05:40">05:40</option>
+<option value="05:50">05:50</option>
+<option value="06:00">06:00</option>
+<option value="06:10">06:10</option>
+<option value="06:20">06:20</option>
+<option value="06:30">06:30</option>
+<option value="06:40">06:40</option>
+<option value="06:50">06:50</option>
+<option value="07:00">07:00</option>
+<option value="07:10">07:10</option>
+<option value="07:20">07:20</option>
+<option value="07:30">07:30</option>
+<option value="07:40">07:40</option>
+<option value="07:50">07:50</option>
+<option value="08:00">08:00</option>
+<option value="08:10">08:10</option>
+<option value="08:20">08:20</option>
+<option value="08:30">08:30</option>
+<option value="08:40">08:40</option>
+<option value="08:50">08:50</option>
+<option value="09:00">09:00</option>
+<option value="09:10">09:10</option>
+<option value="09:20">09:20</option>
+<option value="09:30">09:30</option>
+<option value="09:40">09:40</option>
+<option value="09:50">09:50</option>
+<option value="10:00">10:00</option>
+<option value="10:10">10:10</option>
+<option value="10:20">10:20</option>
+<option value="10:30">10:30</option>
+<option value="10:40">10:40</option>
+<option value="10:50">10:50</option>
+<option value="11:00">11:00</option>
+<option value="11:10">11:10</option>
+<option value="11:20">11:20</option>
+<option value="11:30">11:30</option>
+<option value="11:40">11:40</option>
+<option value="11:50">11:50</option>
+<option value="12:00">12:00</option>
+<option value="12:10">12:10</option>
+<option value="12:20">12:20</option>
+<option value="12:30">12:30</option>
+<option value="12:40">12:40</option>
+<option value="12:50">12:50</option>
+<option value="13:00">13:00</option>
+<option value="13:10">13:10</option>
+<option value="13:20">13:20</option>
+<option value="13:30">13:30</option>
+<option value="13:40">13:40</option>
+<option value="13:50">13:50</option>
+<option value="14:00">14:00</option>
+<option value="14:10">14:10</option>
+<option value="14:20">14:20</option>
+<option value="14:30">14:30</option>
+<option value="14:40">14:40</option>
+<option value="14:50">14:50</option>
+<option value="15:00">15:00</option>
+<option value="15:10">15:10</option>
+<option value="15:20">15:20</option>
+<option value="15:30">15:30</option>
+<option value="15:40">15:40</option>
+<option value="15:50">15:50</option>
+<option value="16:00">16:00</option>
+<option value="16:10">16:10</option>
+<option value="16:20">16:20</option>
+<option value="16:30">16:30</option>
+<option value="16:40">16:40</option>
+<option value="16:50">16:50</option>
+<option value="17:00">17:00</option>
+<option value="17:10">17:10</option>
+<option value="17:20">17:20</option>
+<option value="17:30">17:30</option>
+<option value="17:40">17:40</option>
+<option value="17:50">17:50</option>
+<option value="18:00">18:00</option>
+<option value="18:10">18:10</option>
+<option value="18:20">18:20</option>
+<option value="18:30">18:30</option>
+<option value="18:40">18:40</option>
+<option value="18:50">18:50</option>
+<option value="19:00">19:00</option>
+<option value="19:10">19:10</option>
+<option value="19:20">19:20</option>
+<option value="19:30">19:30</option>
+<option value="19:40">19:40</option>
+<option value="19:50">19:50</option>
+<option value="20:00">20:00</option>
+<option value="20:10">20:10</option>
+<option value="20:20">20:20</option>
+<option value="20:30">20:30</option>
+<option value="20:40">20:40</option>
+<option value="20:50">20:50</option>
+<option value="21:00">21:00</option>
+<option value="21:10">21:10</option>
+<option value="21:20">21:20</option>
+<option value="21:30">21:30</option>
+<option value="21:40">21:40</option>
+<option value="21:50">21:50</option>
+<option value="22:00">22:00</option>
+<option value="22:10">22:10</option>
+<option value="22:20">22:20</option>
+<option value="22:30">22:30</option>
+<option value="22:40">22:40</option>
+<option value="22:50">22:50</option>
+<option value="23:00">23:00</option>
+<option value="23:10">23:10</option>
+<option value="23:20">23:20</option>
+<option value="23:30">23:30</option>
+<option value="23:40">23:40</option>
+<option value="23:50">23:50</option>
+</select>
+
+
+<button onclick="saveEditedSchedule()">수정 저장</button>
+<button type="button" type="button" onclick="document.getElementById('editModal').style.display='none'; return false;">수정 취소</button>
+
+
+</div>
+</div>
+
+
+<div class="modal" id="customerPageModal">
+<div class="modalbox">
+
+<h2>고객명단 전체보기</h2>
+
+<input type="text"
+id="customerPageSearch"
+placeholder="고객 검색"
+onkeyup="renderCustomerPage()">
+
+<div id="customerPageList"></div>
+
+<br>
+
+<button onclick="closeCustomerPage()">닫기</button>
+
+</div>
+</div>
+
+
+<div class="modal" id="customerEditModal">
+<div class="modalbox">
+
+<h2>고객 수정</h2>
+
+<input type="hidden" id="editCustomerPhoneOld">
+
+<input type="text" id="editCustomerName" placeholder="고객명">
+
+<input type="text" id="editCustomerPhone" placeholder="전화번호">
+
+<input type="text" id="editCustomerAddress" placeholder="주소">
+
+<textarea id="editCustomerMemo" placeholder="메모"></textarea>
+
+<button onclick="saveCustomerEdit()">저장</button>
+
+<button onclick="closeCustomerEdit()">취소</button>
+
+</div>
+</div>
+
+<div class="menu" id="menu">
+<div onclick="viewSchedules()">📋 일정보기</div>
+</div>
+
+<script>
+
+let currentDate = new Date();
+let selectedDate = "";
+
+function getSchedules(){
+return JSON.parse(localStorage.getItem("schedules") || "[]");
+}
+
+function saveSchedules(data){
+localStorage.setItem("schedules", JSON.stringify(data));
+}
+
+function getCustomers(){
+return JSON.parse(localStorage.getItem("customers") || "[]");
+}
+
+function saveCustomers(data){
+localStorage.setItem("customers", JSON.stringify(data));
+}
+
+function addCustomer(){
+
+const customers = getCustomers();
+
+customers.push({
+name:document.getElementById("customerName").value,
+phone:document.getElementById("customerPhone").value,
+address:document.getElementById("customerAddress").value,
+memo:document.getElementById("customerMemo").value
+});
+
+saveCustomers(customers);
+
+document.getElementById("customerList").innerHTML="";
+
+document.getElementById("customerName").value="";
+document.getElementById("customerPhone").value="";
+document.getElementById("customerAddress").value="";
+document.getElementById("customerMemo").value="";
+}
+
+
+
+
+function editCustomer(phone){
+
+const customers = getCustomers();
+
+const c = customers.find(x=>x.phone===phone);
+
+if(!c)return;
+
+document.getElementById("editCustomerPhoneOld").value = phone;
+document.getElementById("editCustomerName").value = c.name || "";
+document.getElementById("editCustomerPhone").value = c.phone || "";
+document.getElementById("editCustomerAddress").value = c.address || "";
+document.getElementById("editCustomerMemo").value = c.memo || "";
+
+document.getElementById("customerEditModal").style.display="flex";
+
+}
+
+function closeCustomerEdit(){
+
+document.getElementById("customerEditModal").style.display="none";
+
+}
+
+function saveCustomerEdit(){
+
+const oldPhone =
+document.getElementById("editCustomerPhoneOld").value;
+
+let customers = getCustomers();
+
+customers = customers.map(c => {
+
+if(c.phone===oldPhone){
+
+return{
+name:document.getElementById("editCustomerName").value,
+phone:document.getElementById("editCustomerPhone").value,
+address:document.getElementById("editCustomerAddress").value,
+memo:document.getElementById("editCustomerMemo").value
+};
+
+}
+
+return c;
+
+});
+
+saveCustomers(customers);
+
+renderCustomerPage();
+
+closeCustomerEdit();
+
+}
+
+function deleteCustomer(phone){
+
+if(!confirm("고객 삭제?")) return;
+
+let customers = getCustomers();
+
+customers = customers.filter(c=>c.phone!==phone);
+
+saveCustomers(customers);
+
+renderCustomerPage();
+
+}
+function openCustomerPage(){
+
+document.getElementById("customerPageModal")
+.style.display="flex";
+
+renderCustomerPage();
+
+}
+
+function closeCustomerPage(){
+
+document.getElementById("customerPageModal")
+.style.display="none";
+
+}
+
+function renderCustomerPage(){
+
+const keyword =
+document.getElementById("customerPageSearch")
+.value
+.toLowerCase();
+
+const area =
+document.getElementById("customerPageList");
+
+area.innerHTML="";
+
+getCustomers()
+.filter(c=>
+
+keyword===""
+
+||
+
+c.name.toLowerCase().includes(keyword)
+||
+c.phone.includes(keyword)
+
+)
+.forEach(c=>{
+
+area.innerHTML += `
+<div class="customer-card">
+
+<b>${c.name}</b><br>
+
+📞 ${c.phone}<br>
+
+${c.address ? "🏠 "+c.address+"<br>" : ""}
+
+${c.memo ? "📝 "+c.memo : ""}
+
+<br><br>
+
+<button onclick="editCustomer('${c.phone}')">수정</button>
+
+<button onclick="deleteCustomer('${c.phone}')">삭제</button>
+
+</div>
+`;
+
+});
+
+}
+
+function exportCustomersExcel(){
+
+const customers = getCustomers();
+
+if(customers.length===0){
+
+alert("고객 데이터 없음");
+return;
+}
+
+const data = customers.map(c => ({
+"고객명": c.name || "",
+"전화번호": c.phone || "",
+"주소": c.address || "",
+"메모": c.memo || ""
+}));
+
+const ws = XLSX.utils.json_to_sheet(data);
+
+const wb = XLSX.utils.book_new();
+
+XLSX.utils.book_append_sheet(wb, ws, "고객명단");
+
+XLSX.writeFile(wb, "고객명단.xlsx");
+
+}
+function renderCustomers(){
+
+const keyword =
+document.getElementById("searchInput").value.toLowerCase();
+
+const list = document.getElementById("customerList");
+
+if(keyword===""){
+list.style.display="none";
+list.innerHTML="";
+return;
+}
+
+list.style.display="block";
+list.innerHTML="";
+
+getCustomers()
+.filter(c =>
+c.name.toLowerCase().includes(keyword) ||
+c.phone.includes(keyword)
+)
+.forEach(c=>{
+
+list.innerHTML += `
+<div class="customer-card">
+<b>${c.name}</b><br>
+📞 ${c.phone}<br>
+
+${c.address ? "🏠 "+c.address+"<br>" : ""}
+
+${c.memo ? "📝 "+c.memo : ""}
+</div>
+`;
+
+});
+}
+
+
+function searchScheduleCustomers(){
+
+const keyword =
+document.getElementById("customerSearch")
+.value
+.toLowerCase();
+
+const area =
+document.getElementById("scheduleCustomerList");
+
+area.innerHTML="";
+
+if(keyword===""){
+return;
+}
+
+getCustomers()
+.filter(c=>
+c.name.toLowerCase().includes(keyword) ||
+c.phone.includes(keyword)
+)
+.forEach(c=>{
+
+area.innerHTML += `
+<div
+style="
+padding:8px;
+border-bottom:1px solid #eee;
+cursor:pointer;
+"
+onclick="selectScheduleCustomer('${c.name}')">
+
+${c.name} / ${c.phone}
+
+</div>
+`;
+
+});
+
+}
+
+function selectScheduleCustomer(name){
+
+document.getElementById("selectedCustomer").value =
+name;
+
+document.getElementById("customerSearch").value =
+name;
+
+document.getElementById("scheduleCustomerList").innerHTML="";
+}
+
+
+document.addEventListener("change", function(e){
+
+if(e.target.id==="repeatType"){
+
+document.getElementById("weeklyOptions").style.display =
+e.target.value==="weekly"
+? "block"
+: "none";
+
+}
+
+});
+function renderCalendar(){
+
+const cal=document.getElementById("calendar");
+
+cal.innerHTML="";
+
+const y=currentDate.getFullYear();
+const m=currentDate.getMonth();
+
+document.getElementById("monthText").innerText=
+y+"년 "+(m+1)+"월";
+
+const first=new Date(y,m,1).getDay();
+const last=new Date(y,m+1,0).getDate();
+
+const names=["일","월","화","수","목","금","토"];
+
+for(let i=0;i<7;i++){
+
+const d=document.createElement("div");
+d.className="dayname";
+d.innerText=names[i];
+
+cal.appendChild(d);
+}
+
+for(let i=0;i<first;i++){
+
+const blank=document.createElement("div");
+cal.appendChild(blank);
+}
+
+const schedules=getSchedules();
+
+for(let d=1; d<=last; d++){
+
+const full=
+y+"-"+String(m+1).padStart(2,"0")+"-"+String(d).padStart(2,"0");
+
+const box=document.createElement("div");
+box.className="day";
+
+const date=document.createElement("div");
+date.className="date";
+date.innerText=d;
+
+box.appendChild(date);
+
+schedules
+.filter(s=>s.date.startsWith(full))
+.forEach(s=>{
+
+const ev=document.createElement("div");
+
+ev.className=
+s.type==="end"
+? "event end"
+: "event";
+
+const time =
+s.date.includes("T")
+? s.date.split("T")[1].substring(0,5)
+: "";
+
+ev.innerHTML=
+time+"<br>"+s.title;
+
+box.appendChild(ev);
+
+});
+
+box.onclick=function(){
+openSchedule(full);
+};
+
+box.oncontextmenu=function(e){
+
+e.preventDefault();
+
+selectedDate=full;
+
+const menu=document.getElementById("menu");
+
+menu.style.display="block";
+menu.style.left=e.pageX+"px";
+menu.style.top=e.pageY+"px";
+};
+
+cal.appendChild(box);
+
+}
+}
+
+function openSchedule(date){
+
+selectedDate=date;
+
+document.getElementById("scheduleDate").innerText=date;
+
+document.getElementById("startDateDate").value=date;
+document.getElementById("startDateTime").value="09:00";
+document.getElementById("endDateDate").value=date;
+document.getElementById("endDateTime").value="18:00";
+
+document.getElementById("scheduleModal").style.display="flex";
+}
+
+function closeModal(){
+document.getElementById("scheduleModal").style.display="none";
+}
+
+function saveSchedule(){
+
+const schedules=getSchedules();
+
+const groupId="g"+Date.now();
+
+const rawTitle=
+document.getElementById("scheduleTitle").value;
+
+const customerName =
+document.getElementById("selectedCustomer").value;
+
+const title =
+customerName
+? customerName + "/" + rawTitle.replace(/^.*?[\-\/]/,'').trim()
+: rawTitle;
+const memo=document.getElementById("scheduleMemo").value;
+const customer=document.getElementById("selectedCustomer").value;
+const start=
+document.getElementById("startDateDate").value+
+"T"+
+document.getElementById("startDateTime").value;
+const end=
+document.getElementById("endDateDate").value+
+"T"+
+document.getElementById("endDateTime").value;
+const repeat=document.getElementById("repeatType").value;
+
+function add(date,titleText,type=""){
+
+schedules.push({
+groupId:groupId,
+date:date,
+title:titleText,
+memo:memo,
+customer:customer,
+customer:customer,
+type:type
+});
+
+}
+
+add(start,title);
+
+if(end!==start){
+add(end,title+" 종료","end");
+}
+
+if(repeat!==""){
+
+const base=new Date(start);
+const endLimit=new Date(end);
+
+for(let i=1;i<=365;i++){
+
+const next=new Date(base);
+
+/* 요일 반복 */
+if(repeat==="weekly"){
+
+const checkedDays =
+[...document.querySelectorAll(".weekDay:checked")]
+.map(x=>parseInt(x.value));
+
+if(checkedDays.length>0){
+
+for(let j=0;j<7;j++){
+
+const temp = new Date(base);
+
+temp.setDate(base.getDate() + ((i-1)*7) + j);
+
+if(checkedDays.includes(temp.getDay())){
+
+if(temp > endLimit){
+continue;
+}
+
+const nd=
+temp.getFullYear()+"-"+
+String(temp.getMonth()+1).padStart(2,"0")+"-"+
+String(temp.getDate()).padStart(2,"0")+"T"+
+String(temp.getHours()).padStart(2,"0")+":"+
+String(temp.getMinutes()).padStart(2,"0");
+
+add(nd,title,"repeat");
+
+}
+
+}
+
+continue;
+
+}
+
+}
+
+if(repeat==="daily"){
+next.setDate(base.getDate()+i);
+}
+
+if(repeat==="weekly"){
+
+const checkedDays =
+[...document.querySelectorAll(".weekDay:checked")]
+.map(x=>parseInt(x.value));
+
+if(checkedDays.length===0){
+
+next.setDate(base.getDate()+(i*7));
+
+}else{
+
+continue;
+
+}
+
+}
+
+if(repeat==="monthly"){
+next.setMonth(base.getMonth()+i);
+}
+
+/* 매주 반복 종료일 보정 */
+if(repeat==="weekly"){
+
+/* 종료일보다 크면 중단 */
+if(next > endLimit){
+break;
+}
+
+/* 종료일 주차 넘으면 중단 */
+const weekDiff =
+Math.floor(
+(next - base) / (1000*60*60*24*7)
+);
+
+const compare = new Date(base);
+
+compare.setDate(
+base.getDate() + (weekDiff * 7)
+);
+
+if(compare > endLimit){
+break;
+}
+
+}else{
+
+/* 일반 종료 제한 */
+if(next > endLimit){
+break;
+}
+
+}
+
+const nd=
+next.getFullYear()+"-"+
+String(next.getMonth()+1).padStart(2,"0")+"-"+
+String(next.getDate()).padStart(2,"0")+"T"+
+String(next.getHours()).padStart(2,"0")+":"+
+String(next.getMinutes()).padStart(2,"0");
+
+add(nd,title,"repeat");
+
+}
+
+}
+
+saveSchedules(schedules);
+
+
+renderCalendar();
+
+window.addEventListener("click", function(e){
+
+document.querySelectorAll(".modal").forEach(modal=>{
+
+if(e.target === modal){
+
+modal.style.display = "none";
+
+}
+
+});
+
+});
+
+
+/* 고객 선택 시 일정제목 자동 입력 */
+const oldSelectScheduleCustomer = selectScheduleCustomer;
+
+selectScheduleCustomer = function(name){
+
+oldSelectScheduleCustomer(name);
+
+const titleInput =
+document.getElementById("scheduleTitle");
+
+titleInput.value = name + " - ";
+
+}
+
+/* 입력 초기화 */
+document.getElementById("scheduleTitle").value="";
+document.getElementById("scheduleMemo").value="";
+document.getElementById("customerSearch").value="";
+document.getElementById("selectedCustomer").value="";
+document.getElementById("scheduleCustomerList").innerHTML="";
+document.getElementById("repeatType").value="";
+
+closeModal();
+}
+
+function viewSchedules(){
+
+const list =
+getSchedules().filter(s=>s.date.startsWith(selectedDate));
+
+const area=document.getElementById("listArea");
+
+area.innerHTML="";
+
+list.forEach((s,index)=>{
+
+const detailTime =
+s.date.includes("T")
+? s.date.split("T")[1].substring(0,5)
+: "";
+
+const detailDate =
+s.date.split("T")[0];
+
+area.innerHTML += `
+<div class="customer-card">
+
+<label>
+
+<input type="checkbox" class="chk" value="${s.groupId}">
+
+<div style="margin-top:8px">
+
+<b style="font-size:16px">${s.title}</b><br><br>
+
+📅 시작일 :
+${(() => {
+
+const startItem =
+getSchedules().find(x =>
+x.groupId===s.groupId &&
+x.type!=="end"
+);
+
+if(!startItem) return "-";
+
+const sd =
+startItem.date.split("T")[0];
+
+const st =
+startItem.date.split("T")[1].substring(0,5);
+
+return sd+" "+st;
+
+})()}
+<br>
+
+🔴 종료일 :
+${(() => {
+
+const endItem =
+getSchedules().find(x =>
+x.groupId===s.groupId &&
+x.type==="end"
+);
+
+if(!endItem) return "-";
+
+const ed =
+endItem.date.split("T")[0];
+
+const et =
+endItem.date.split("T")[1].substring(0,5);
+
+return ed+" "+et;
+
+})()}
+<br>
+
+🕒 현재 일정시간 :
+${detailTime || "-"}
+<br>
+
+👤 고객 : ${s.customer || "-"}<br><br>
+
+📝 메모<br>
+<div style="
+background:#f3f4f6;
+padding:8px;
+border-radius:6px;
+margin-top:5px;
+white-space:pre-wrap;
+">
+
+${s.memo || "-"}
+
+</div>
+
+</div>
+
+</label>
+
+</div>
+`;
+
+});
+
+area.innerHTML += `
+<button onclick="deleteSelected()">선택 삭제</button>
+<button onclick="editSelected()">선택 수정</button>
+`;
+
+document.getElementById("listTitle").innerText=
+selectedDate+" 일정";
+
+document.getElementById("listModal").style.display="flex";
+
+document.getElementById("menu").style.display="none";
+}
+
+function closeList(){
+document.getElementById("listModal").style.display="none";
+}
+
+function deleteSelected(){
+
+const checked =
+document.querySelector(".chk:checked");
+
+if(!checked){
+alert("선택");
+return;
+}
+
+const gid=checked.value;
+
+let schedules=getSchedules();
+
+schedules=schedules.filter(s=>s.groupId!==gid);
+
+saveSchedules(schedules);
+
+renderCalendar();
+
+viewSchedules();
+}
+
+function editSelected(){
+
+const checked =
+document.querySelector(".chk:checked");
+
+if(!checked){
+alert("선택");
+return;
+}
+
+const gid=checked.value;
+
+const schedules=getSchedules();
+
+const items=schedules.filter(s=>s.groupId===gid);
+
+const startItem=items.find(s=>s.type!=="end");
+const endItem=items.find(s=>s.type==="end");
+
+document.getElementById("editGroupId").value=gid;
+document.getElementById("editTitle").value=
+startItem.title.replace(" 종료","");
+
+document.getElementById("editMemo").value=
+startItem.memo || "";
+
+document.getElementById("editStartDate").value=
+startItem.date.split("T")[0];
+
+document.getElementById("editStartTime").value=
+startItem.date.split("T")[1].substring(0,5);
+
+const endValue =
+(endItem ? endItem.date : startItem.date);
+
+document.getElementById("editEndDate").value=
+endValue.split("T")[0];
+
+document.getElementById("editEndTime").value=
+endValue.split("T")[1].substring(0,5);
+
+document.getElementById("editModal").style.display="flex";
+}
+
+
+
+function saveEditedSchedule(){
+
+const gid=document.getElementById("editGroupId").value;
+
+const title=document.getElementById("editTitle").value;
+const memo=document.getElementById("editMemo").value;
+
+const newStart=
+document.getElementById("editStartDate").value+
+"T"+
+document.getElementById("editStartTime").value;
+
+const newEnd=
+document.getElementById("editEndDate").value+
+"T"+
+document.getElementById("editEndTime").value;
+
+let schedules=getSchedules();
+
+const group =
+schedules.filter(s=>s.groupId===gid);
+
+const startItem =
+group.find(s=>s.type!=="end" && s.type!=="repeat");
+
+if(!startItem)return;
+
+const oldStart = new Date(startItem.date);
+const changedStart = new Date(newStart);
+
+group.forEach(s=>{
+
+s.memo = memo;
+
+/* 종료 일정 */
+if(s.type==="end"){
+
+s.date = newEnd;
+s.title = title + " 종료";
+
+}
+
+/* 반복 일정 */
+else if(s.type==="repeat"){
+
+const oldDate = new Date(s.date);
+
+const diff =
+oldDate.getTime() - oldStart.getTime();
+
+const moved =
+new Date(changedStart.getTime() + diff);
+
+const yyyy = moved.getFullYear();
+const mm = String(moved.getMonth()+1).padStart(2,"0");
+const dd = String(moved.getDate()).padStart(2,"0");
+const hh = String(moved.getHours()).padStart(2,"0");
+const mi = String(moved.getMinutes()).padStart(2,"0");
+
+s.date =
+yyyy+"-"+mm+"-"+dd+"T"+hh+":"+mi;
+
+s.title = title;
+
+}
+
+/* 시작 일정 */
+else{
+
+s.date = newStart;
+s.title = title;
+
+}
+
+});
+
+saveSchedules(schedules);
+
+renderCalendar();
+
+document.getElementById("editModal").style.display="none";
+
+closeList();
+
+}
+
+
+
+function changeMonth(v){
+
+currentDate.setMonth(currentDate.getMonth()+v);
+
+renderCalendar();
+}
+
+document.addEventListener("click", function(){
+document.getElementById("menu").style.display="none";
+});
+
+renderCalendar();
+
+</script>
+
+</body>
 </html>
