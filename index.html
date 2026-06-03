@@ -1669,120 +1669,30 @@ let schedules=getSchedules();
 schedules=schedules.filter(s=>s.groupId!==gid);
 
 
-/* 기존 반복 삭제 */
-schedules =
-schedules.filter(s=>
-!(s.groupId===gid && s.type==="repeat")
-);
+function deleteSelected(){
 
-/* 반복 다시 생성 */
-const repeatType =
-document.getElementById("editRepeatType").value;
+const checked =
+document.querySelector(".chk:checked");
 
-if(repeatType!==""){
-
-const base = new Date(newStart);
-const endLimit = new Date(newEnd);
-
-for(let i=1;i<=365;i++){
-
-if(repeatType==="weekly"){
-
-const checkedDays =
-[...document.querySelectorAll(".editWeekDay:checked")]
-.map(x=>parseInt(x.value));
-
-for(let j=0;j<7;j++){
-
-const temp = new Date(base);
-
-temp.setDate(base.getDate()+((i-1)*7)+j);
-
-if(checkedDays.includes(temp.getDay())){
-
-/* 시작일 중복 방지 */
-if(temp.getTime()===base.getTime()){
-continue;
+if(!checked){
+alert("선택");
+return;
 }
 
-/* 종료일 날짜 중복 방지 */
-if(
-temp.getFullYear()===endLimit.getFullYear()
-&&
-temp.getMonth()===endLimit.getMonth()
-&&
-temp.getDate()===endLimit.getDate()
-){
-continue;
-}
+const gid = checked.value;
 
-if(temp > endLimit){
-continue;
-}
+let schedules = getSchedules();
 
-const nd=
-temp.getFullYear()+"-"+
-String(temp.getMonth()+1).padStart(2,"0")+"-"+
-String(temp.getDate()).padStart(2,"0")+"T"+
-String(temp.getHours()).padStart(2,"0")+":"+
-String(temp.getMinutes()).padStart(2,"0");
-
-schedules.push({
-groupId:gid,
-date:nd,
-title:title,
-memo:memo,
-customer:"",
-type:"repeat"
-});
-
-}
-
-}
-
-continue;
-
-}
-
-const next=new Date(base);
-
-if(repeatType==="daily"){
-next.setDate(base.getDate()+i);
-}
-
-if(repeatType==="monthly"){
-next.setMonth(base.getMonth()+i);
-}
-
-if(next > endLimit){
-break;
-}
-
-const nd=
-next.getFullYear()+"-"+
-String(next.getMonth()+1).padStart(2,"0")+"-"+
-String(next.getDate()).padStart(2,"0")+"T"+
-String(next.getHours()).padStart(2,"0")+":"+
-String(next.getMinutes()).padStart(2,"0");
-
-schedules.push({
-groupId:gid,
-date:nd,
-title:title,
-memo:memo,
-customer:"",
-type:"repeat"
-});
-
-}
-
-}
+/* 같은 그룹 전체 삭제 */
+schedules = schedules.filter(s => s.groupId !== gid);
 
 saveSchedules(schedules);
 
 renderCalendar();
 
 viewSchedules();
+
+}
 }
 
 function editSelected(){
