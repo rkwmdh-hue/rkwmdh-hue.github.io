@@ -1251,7 +1251,7 @@ box.oncontextmenu=function(e){
 
 e.preventDefault();
 
-e.stopPropagation();
+e.stopImmediatePropagation();
 
 selectedDate=full;
 
@@ -1262,6 +1262,9 @@ menu.style.display="block";
 menu.style.left=e.pageX+"px";
 
 menu.style.top=e.pageY+"px";
+
+/* 일정등록창 강제 닫기 */
+document.getElementById("scheduleModal").style.display="none";
 
 return false;
 
