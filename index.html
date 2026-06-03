@@ -1243,8 +1243,14 @@ box.appendChild(ev);
 
 });
 
-box.onclick=function(){
+box.onclick=function(e){
+
+if(e.button===2){
+return false;
+}
+
 openSchedule(full);
+
 };
 
 box.oncontextmenu=function(e){
