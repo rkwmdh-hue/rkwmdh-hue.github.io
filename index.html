@@ -1243,17 +1243,21 @@ box.appendChild(ev);
 
 });
 
-box.onclick=function(){
-openSchedule(full);
-};
+box.onclick=function(e){
 
-box.ondblclick=function(e){
-
-e.preventDefault();
+/* Shift + 클릭 → 일정보기 */
+if(e.shiftKey){
 
 selectedDate=full;
 
 viewSchedules();
+
+return;
+
+}
+
+/* 일반 클릭 → 일정등록 */
+openSchedule(full);
 
 };
 cal.appendChild(box);
