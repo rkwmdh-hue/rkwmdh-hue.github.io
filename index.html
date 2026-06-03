@@ -1251,13 +1251,20 @@ box.oncontextmenu=function(e){
 
 e.preventDefault();
 
+e.stopPropagation();
+
 selectedDate=full;
 
 const menu=document.getElementById("menu");
 
 menu.style.display="block";
+
 menu.style.left=e.pageX+"px";
+
 menu.style.top=e.pageY+"px";
+
+return false;
+
 };
 
 cal.appendChild(box);
