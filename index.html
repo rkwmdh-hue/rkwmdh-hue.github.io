@@ -1923,17 +1923,33 @@ s.title = title;
 });
 
 
-/* 기존 반복 삭제 */
-schedules =
-schedules.filter(s=>
-!(s.groupId===gid && s.type==="repeat")
-);
+/* 반복 일정 유지 */
+group.forEach(s=>{
 
-/* 반복 다시 생성 */
-const repeatType =
-document.getElementById("editRepeatType").value;
+if(s.type==="repeat"){
 
-if(repeatType!==""){
+const oldDate = new Date(s.date);
+
+const diff =
+oldDate.getTime() - oldStart.getTime();
+
+const moved =
+new Date(changedStart.getTime() + diff);
+
+const yyyy = moved.getFullYear();
+const mm = String(moved.getMonth()+1).padStart(2,"0");
+const dd = String(moved.getDate()).padStart(2,"0");
+const hh = String(moved.getHours()).padStart(2,"0");
+const mi = String(moved.getMinutes()).padStart(2,"0");
+
+s.date =
+yyyy+"-"+mm+"-"+dd+"T"+hh+":"+mi;
+
+s.title = title;
+
+}
+
+});
 
 const base = new Date(newStart);
 const endLimit = new Date(newEnd);
