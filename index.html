@@ -1,289 +1,85 @@
-<script>
 
-async function getSchedules(){
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>고객 스케줄 관리</title>
 
-    if(window.firebaseReady){
-
-        const data = await window.getSchedules();
-
-        return data || [];
-
-    }
-
-    return [];
-
+<style>
+body{margin:0;font-family:Arial;background:#f3f4f6}
+.header{background:#111827;color:white;padding:15px;font-size:24px}
+.container{display:flex;min-height:100vh}
+.sidebar{width:320px;background:white;border-right:1px solid #ddd;padding:15px;overflow:auto}
+.main{flex:1;padding:15px}
+.calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.dayname{background:#1f2937;color:white;padding:10px;text-align:center;font-weight:bold}
+.day{background:white;border:1px solid #ccc;min-height:120px;padding:5px;cursor:pointer}
+.date{font-size:18px;font-weight:bold}
+.event{
+background:#2563eb;
+color:white;
+padding:3px;
+border-radius:5px;
+margin-top:3px;
+font-size:12px
 }
 
-async function saveSchedules(data){
+.event.end{
+background:#dc2626;
+}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);justify-content:center;align-items:center;z-index:999}
+.modalbox{background:white;padding:20px;width:95%;max-width:500px;max-height:90vh;overflow:auto}
+input,textarea,select{width:100%;padding:10px;margin-bottom:10px;box-sizing:border-box}
+button{padding:10px;margin:2px}
+.customer-card{background:#fff;border:1px solid #ddd;padding:10px;margin-bottom:10px}
+.menu{display:none;position:fixed;background:white;border:1px solid #ccc;z-index:9999}
+.menu div{padding:10px;cursor:pointer}
+.menu div:hover{background:#eee}
+@media(max-width:900px){
+.container{flex-direction:column}
+.sidebar{width:100%}
+.calendar{grid-template-columns:1fr}
+.dayname{display:none}
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 
-    if(window.firebaseReady){
-
-        await window.saveSchedules(data);
-
-    }
-
+<style>
+#weeklyOptions label,
+#editWeeklyOptions label{
+display:flex;
+align-items:center;
+gap:2px;
+margin-right:4px;
+font-size:14px;
+cursor:pointer;
 }
 
-async function getCustomers(){
-
-    if(window.firebaseReady){
-
-        const data = await window.getCustomers();
-
-        return data || [];
-
-    }
-
-    return [];
-
+#weeklyOptions input,
+#editWeeklyOptions input{
+width:auto;
+margin:0;
 }
+</style>
 
-async function saveCustomers(data){
+</head>
+<body>
 
-    if(window.firebaseReady){
 
-        await window.saveCustomers(data);
-
-    }
-
-}
-
-async function addCustomer(){
-
-    const customers = await getCustomers();
-
-    customers.push({
-
-        name:document.getElementById("customerName").value,
-
-        phone:document.getElementById("customerPhone").value,
-
-        address:document.getElementById("customerAddress").value,
-
-        memo:document.getElementById("customerMemo").value
-
-    });
-
-    await saveCustomers(customers);
-
-    document.getElementById("customerList").innerHTML="";
-
-    document.getElementById("customerName").value="";
-
-    document.getElementById("customerPhone").value="";
-
-    document.getElementById("customerAddress").value="";
-
-    document.getElementById("customerMemo").value="";
-
-    alert("고객 저장 완료");
-
-}
-
-async function renderCustomerPage(){
-
-    const keyword = document.getElementById("customerPageSearch")
-
-    .value
-
-    .toLowerCase();
-
-    const area = document.getElementById("customerPageList");
-
-    area.innerHTML="";
-
-    const customers = await getCustomers();
-
-    customers
-
-    .filter(c=>
-
-        keyword===""
-
-        ||
-
-        (c.name || "").toLowerCase().includes(keyword)
-
-        ||
-
-        (c.phone || "").includes(keyword)
-
-    )
-
-    .forEach(c=>{
-
-        area.innerHTML += `
-
-<div class="customer-card">
-
-<b>${c.name}</b><br>
-
-📞 ${c.phone}<br>
-
-${c.address ? "🏠 "+c.address+"<br>" : ""}
-
-${c.memo ? "📝 "+c.memo : ""}
-
-<br><br>
-
-<button>수정</button>
-
-<button>삭제</button>
-
+<div style="background:#16a34a;color:white;padding:10px;text-align:center;font-weight:bold">
+✅ Firebase 실시간 동기화 버전
 </div>
 
-`;
+<div class="header">📅 고객 스케줄 관리</div>
 
-    });
+<div class="container">
 
-}
+<div class="sidebar">
 
-async function renderCustomers(){
+<h3>고객 등록</h3>
 
-    const keyword = document.getElementById("searchInput").value.toLowerCase();
+<input type="text" id="customerName" placeholder="고객명">
+<input type="text" id="customerPhone" placeholder="전화번호">
 
-    const list = document.getElementById("customerList");
-
-    if(keyword===""){
-
-        list.style.display="none";
-
-        list.innerHTML="";
-
-        return;
-
-    }
-
-    list.style.display="block";
-
-    list.innerHTML="";
-
-    const customers = await getCustomers();
-
-    customers
-
-    .filter(c =>
-
-        (c.name || "").toLowerCase().includes(keyword)
-
-        ||
-
-        (c.phone || "").includes(keyword)
-
-    )
-
-    .forEach(c=>{
-
-        list.innerHTML += `
-
-<div class="customer-card">
-
-<b>${c.name}</b><br>
-
-📞 ${c.phone}<br>
-
-${c.address ? "🏠 "+c.address+"<br>" : ""}
-
-${c.memo ? "📝 "+c.memo : ""}
-
-</div>
-
-`;
-
-    });
-
-}
-
-async function searchScheduleCustomers(){
-
-    const keyword = document.getElementById("customerSearch")
-
-    .value
-
-    .toLowerCase();
-
-    const area = document.getElementById("scheduleCustomerList");
-
-    area.innerHTML="";
-
-    if(keyword===""){
-
-        return;
-
-    }
-
-    const customers = await getCustomers();
-
-    customers
-
-    .filter(c=>
-
-        (c.name || "").toLowerCase().includes(keyword)
-
-        ||
-
-        (c.phone || "").includes(keyword)
-
-    )
-
-    .forEach(c=>{
-
-        area.innerHTML += `
-
-<div class="customer-card">
-
-${c.name} / ${c.phone}
-
-</div>
-
-`;
-
-    });
-
-}
-
-async function renderCalendar(){
-
-    const schedules = await getSchedules();
-
-    console.log(schedules);
-
-}
-
-async function saveSchedule(){
-
-    const schedules = await getSchedules();
-
-    await saveSchedules(schedules);
-
-}
-
-async function deleteSelected(){
-
-    let schedules = await getSchedules();
-
-    await saveSchedules(schedules);
-
-}
-
-async function editSelected(){
-
-    const schedules = await getSchedules();
-
-}
-
-async function saveEditedSchedule(){
-
-    let schedules = await getSchedules();
-
-    await saveSchedules(schedules);
-
-}
-
-window.addEventListener("load", async ()=>{
-
-    await renderCalendar();
-
-});
-
-</script>
+</html>
