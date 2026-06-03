@@ -1247,29 +1247,15 @@ box.onclick=function(){
 openSchedule(full);
 };
 
-box.oncontextmenu=function(e){
+box.ondblclick=function(e){
 
 e.preventDefault();
 
-e.stopImmediatePropagation();
-
 selectedDate=full;
 
-const menu=document.getElementById("menu");
-
-menu.style.display="block";
-
-menu.style.left=e.pageX+"px";
-
-menu.style.top=e.pageY+"px";
-
-/* 일정등록창 강제 닫기 */
-document.getElementById("scheduleModal").style.display="none";
-
-return false;
+viewSchedules();
 
 };
-
 cal.appendChild(box);
 
 }
